@@ -1,26 +1,39 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+//REDUX
+import {Provider} from 'react-redux'
+import store from './store'
+import setAuthToken from './utils/setAuthToken';
+import PrivateRoute from './components/routing/PrivateRoute'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+if(localStorage.token){
+	setAuthToken(localStorage.token);
 }
 
-export default App;
+const App = () => {
+	useEffect(() => {
+		store.dispatch(loadUser());
+	}, [])  //WE HAVE BRACKETS BECAUSE WE WANT THAT WE WILL RUN ONLY ONCE 
+
+	return (
+		<Provider store={store}>
+		<Router>
+			<Fragment>
+				<NavBar/>
+				<Route exact path ='/' component = {Landing}/>
+				<section className="container">
+					<Switch>
+						<Route exact path ='/register' component={Register}/>
+						<Route exact path ='/login' component={Login}/>
+						<PrivateRoute exact path ='/dashboard' component={Dashboard}/>
+					</Switch>
+				</section>
+			</Fragment>
+		</Router>
+		</Provider>
+		  );
+}
+
+
+
+
+export default App ; 
